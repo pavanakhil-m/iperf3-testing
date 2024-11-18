@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: iperf3-client-dell-64
+spec:
+  nodeSelector:
+    rdei.io/sec-zone-green: "true"
+    kubernetes.io/hostname: "10.28.45.68"
+  tolerations:
+  - key: "rdei.io/dell-test"
+    operator: "Equal"
+    value: "true"
+    effect: "NoExecute"
+  containers:
+    - name: perf-client-container
+      image: hub.comcast.net/viper-qaperf/iperf3:latest
+      imagePullPolicy: Always
+      command: [ "sleep", "30000" ]
+      resources:
+        requests:
+          memory: "64Gi"
+          cpu: "64000m"
+        limits:
+          memory: "64Gi"
+          cpu: "64000m"

@@ -1,5 +1,9 @@
-CLIENT_POD="iperf3-client-dell"
-SERVER_POD="iperf3-server-dell"
+echo "------------------------------------------------------------------------------------"
+CORE_COUNT=$1
+echo "Running test for $CORE_COUNT cores"
+
+CLIENT_POD="iperf3-client-dell-$CORE_COUNT"
+SERVER_POD="iperf3-server-service-dell-$CORE_COUNT"
 
 CSN="kubectl exec -it $CLIENT_POD -- iperf3 -c $SERVER_POD -t 30 -i 1 -P 4"
 CSNR="kubectl exec -it $CLIENT_POD -- iperf3 -c $SERVER_POD -t 30 -i 1 -P 4 --reverse"
@@ -9,8 +13,8 @@ CSNB="kubectl exec -it $CLIENT_POD -- iperf3 -c $SERVER_POD -t 30 -i 1 -P 4 --bi
 CSNOB="kubectl exec -it $CLIENT_POD -- iperf3 -c $SERVER_POD -t 35 -i 1 -P 4 -O 5 --bidir"
 
 
-COMMANDS=("$CSN" "$CSNR" "$CSNO" "$CSNRO" "$CSNB" "$CSNBR" "$CSNOB" "$CSNROB")
-COMMAND_NAMES=("CSN" "CSNR" "CSNO" "CSNRO" "CSNB" "CSNBR" "CSNOB" "CSNROB")
+COMMANDS=( "$CSN" "$CSNR" "$CSNO" "$CSNRO" "$CSNB" "$CSNOB" )
+COMMAND_NAMES=( "CSN" "CSNR" "CSNO" "CSNRO" "CSNB" "CSNOB" )
 
 START_TIME=$(date +"%T")
 echo "Starting the test at $START_TIME"
@@ -20,8 +24,10 @@ MIN=$(date +"%M")
 SEC=$(date +"%S")
 
 echo "creating final result file"
-FILENAME="finaldata_${HR}_${MIN}_${SEC}.txt"
-> "$FILENAME"
+FILENAME="finaldata-${CORE_COUNT}_${HR}_${MIN}_${SEC}.txt"
+> "results/$FILENAME"
+
+
 
 echo "starting test in 5 secs"
 sleep 5
@@ -78,5 +84,9 @@ sleep 10
 
 echo "cleaning up"
 ./cleanup-res.sh
+
+echo "------------------------------------------------------------------------------------"
+echo "deleting pods"
+./pods_cleanup.sh
 
 echo "DONE! Get back to Work"
