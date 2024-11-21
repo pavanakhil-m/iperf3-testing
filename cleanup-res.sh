@@ -1,3 +1,3 @@
 echo "starting cleanup"
 
-rm -f result*
+rm -f results/result*

@@ -26,7 +26,11 @@
 # current_time=$(date +"%T")
 # echo "Current time: $current_time"
 
-for i in {1..1}; do
-    echo "Iteration $i"
-done
+# for i in {1..1}; do
+#     echo "Iteration $i"
+# done
+
+ip="10.112.188.135"
+last=$(echo "$ip" | awk -F'.' '{print $4}')
+echo "$last"
 
